@@ -18,7 +18,6 @@ import {
   Trash2,
   Settings,
   BookOpen,
-  Save,
   Calculator,
   X,
 } from 'lucide-react';

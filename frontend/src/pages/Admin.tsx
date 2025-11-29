@@ -7,9 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { formatPrice, formatDate } from '@/lib/utils';
 import { 
   FileText, 
-  Users, 
   TrendingUp,
-  Calendar,
   Loader2,
   CheckCircle,
   Clock,

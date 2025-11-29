@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/Button';
@@ -42,7 +42,6 @@ const labelNames: Record<string, string> = {
 
 export const QuoteResultPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [quoteResult, setQuoteResult] = useState<QuoteResultType | null>(null);
   const [detailedQuoteResult, setDetailedQuoteResult] = useState<DetailedQuoteResult | null>(null);
   const [quoteType, setQuoteType] = useState<'simple' | 'detailed' | null>(null);
@@ -396,9 +395,6 @@ export const QuoteResultPage: React.FC = () => {
   const displayQuoteNumber = quoteType === 'detailed' 
     ? detailedQuoteResult?.quoteNumber 
     : quoteResult?.quoteNumber;
-  const displayCreatedAt = quoteType === 'detailed'
-    ? detailedQuoteResult?.createdAt
-    : quoteResult?.createdAt;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
