@@ -1,0 +1,188 @@
+/* Modal Form Design */
+.item-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Modern Input Styles */
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #1f2937;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    /* Critical for grid */
+}
+
+/* Clean Focus State */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Read-Only / Disabled */
+.form-input:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    border-color: #eee;
+    cursor: default;
+}
+
+/* Checkbox Style */
+.checkbox-field {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.checkbox-field:hover {
+    background-color: #f3f4f6;
+}
+
+.checkbox-input {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+.checkbox-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* File Input Customization */
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.file-input-hidden {
+    display: none;
+}
+
+.file-upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #e5e7eb;
+    border-radius: 10px;
+    background-color: #f9fafb;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #6b7280;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.file-upload-btn:hover {
+    background-color: #fff;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.file-preview {
+    margin-top: 12px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.file-preview img {
+    width: 100%;
+    display: block;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+/* Remove button for file */
+.remove-file-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.remove-file-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Grid Layout for Compact Fields */
+.form-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.submit-btn-large {
+    width: 100%;
+    padding: 14px;
+    background-color: #1f2937;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn-large:hover {
+    background-color: #000;
+}

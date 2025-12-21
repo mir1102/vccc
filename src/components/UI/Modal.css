@@ -16,8 +16,14 @@
     background-color: var(--card-bg);
     width: 90%;
     max-width: 500px;
+    max-height: 85vh;
+    /* Limit height to viewport */
     border-radius: 16px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    /* Flex layout */
+    flex-direction: column;
+    /* Stack header and body */
     overflow: hidden;
     animation: slideUp 0.3s ease;
 }
@@ -40,6 +46,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--card-bg);
+    /* Ensure opaque header */
+    z-index: 10;
 }
 
 .modal-header h2 {
@@ -60,4 +69,8 @@
 
 .modal-body {
     padding: 20px;
+    overflow-y: auto;
+    /* Scrollable body */
+    flex: 1;
+    /* Take remaining space */
 }

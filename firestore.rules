@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is accessing their own data
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Rules for 'items' collection
+    match /items/{itemId} {
+      // Allow read/write if the document's userId matches the requester's UID
+      // For create: check request data. For others: check existing resource data.
+      allow create: if isOwner(request.resource.data.userId);
+      allow update, delete: if isOwner(resource.data.userId);
+      allow read: if isOwner(resource.data.userId);
+    }
+    
+    // Rules for 'categories' collection
+    match /categories/{categoryId} {
+      allow create: if isOwner(request.resource.data.userId);
+      allow update, delete: if isOwner(resource.data.userId);
+      allow read: if isOwner(resource.data.userId);
+    }
+  }
+}

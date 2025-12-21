@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { Home, User, Heart, Bell, Menu } from 'lucide-react';
-import './MainLayout.css'; // We will create this specific style or use global
+import { Home, User, Bell, Settings as SettingsIcon, Globe, Archive } from 'lucide-react'; // Using Globe for Ground
+import './MainLayout.css';
 
 const MainLayout = () => {
     return (
@@ -12,19 +12,24 @@ const MainLayout = () => {
             <nav className="bottom-nav">
                 <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                     <Home size={24} />
-                    <span>Home</span>
+                    <span>홈</span>
                 </NavLink>
-                <NavLink to="/social" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-                    <Heart size={24} />
-                    <span>Social</span>
+                <NavLink to="/ground" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <Globe size={24} />
+                    <span>그라운드</span>
                 </NavLink>
                 <NavLink to="/notifications" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                     <Bell size={24} />
-                    <span>Noti</span>
+                    <span>알림</span>
                 </NavLink>
-                <NavLink to="/my" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
-                    <User size={24} />
-                    <span>My</span>
+                <NavLink to="/archive" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <Archive size={24} />
+                    <span>보관함</span>
+                </NavLink>
+                {/* My Tab Removed - Merged into Settings */}
+                <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                    <SettingsIcon size={24} />
+                    <span>통합설정</span>
                 </NavLink>
             </nav>
         </div>

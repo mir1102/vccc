@@ -1,104 +1,307 @@
 .home-container {
-    padding: 16px;
+    padding: 20px;
     height: 100%;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
 }
 
-.home-header {
+.home-view-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: #f3f4f6;
+    padding: 6px;
+    border-radius: 12px;
+    align-self: center;
+}
+
+.switcher-btn {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6b7280;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.switcher-btn:hover {
+    color: #374151;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.switcher-btn.active {
+    background: white;
+    color: #3b82f6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.home-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.full-height {
+    height: 100%;
+    width: 100%;
+}
+
+.calendar-section {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    /* Important for inner scrolling */
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom-split-view {
+    display: flex;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* ... keep previous styles ... */
+
+.main-content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: white;
+}
+
+.collection-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.collection-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.home-header h1 {
+.collection-header h2 {
+    margin: 0;
     font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-/* Wrapper for the split view content */
-/* We need to apply this grid structure to the parent container actually, but since Home.jsx
-   doesn't have a wrapper div around sections, we'll assume we can use the container directly
-   if we had one. But Home.jsx has flat children: header, calendar-section, categories-section.
-   
-   So we can target the container grid logic:
-*/
-
-@media (min-width: 1024px) {
-    .home-container {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr;
-        grid-template-areas:
-            "header header"
-            "calendar categories";
-        overflow: hidden;
-        /* Prevent body scroll, scroll inside sections */
-    }
-
-    .home-header {
-        grid-area: header;
-    }
-
-    .calendar-section {
-        grid-area: calendar;
-        overflow-y: auto;
-    }
-
-    .categories-section {
-        grid-area: categories;
-        overflow-y: auto;
-    }
-}
-
-.calendar-section {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    height: 100%;
-    /* Fill the grid area */
-    display: flex;
-    flex-direction: column;
-}
-
-.categories-section {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    padding: 16px;
-    height: 100%;
-    /* Fill the grid area */
-    display: flex;
-    flex-direction: column;
-}
-
-/* Mobile specific adjustments if needed */
-@media (max-width: 1023px) {
-    .home-container {
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    .calendar-section {
-        min-height: 480px;
-        /* Ensure calendar has space */
-    }
-
-    .categories-section {
-        flex: 1;
-        min-height: 300px;
-    }
 }
 
 .empty-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 1.1rem;
+}
+
+/* Modal form styles */
+.add-cat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-picker-wrapper input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    background: none;
+}
+
+.submit-btn {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #2563eb;
+}
+
+.submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+/* SIDE PANEL STYLES */
+.home-container {
+    /* Ensure existing container supports absolute positioning context if needed, 
+       but here we rely on home-content-wrapper */
+    position: relative;
+}
+
+.home-content-wrapper {
+    /* Main wrapper for flex layout */
+    background: #f9fafb;
+    /* ensure bg */
+}
+
+/* Resizable Panels Support */
+
+.resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+    /* Hit area increased */
+    z-index: 999;
+    cursor: col-resize;
+    user-select: none;
+    /* Visual indicator line in the center */
     display: flex;
     justify-content: center;
-    align-items: center;
+    background: transparent;
+}
+
+/* Hover/Active visual feedback */
+.resize-handle:after {
+    content: '';
+    width: 4px;
     height: 100%;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+.resize-handle:hover:after,
+.resize-handle:active:after {
+    background-color: #3b82f6;
+    /* Visible blue line on hover */
+    opacity: 0.5;
+}
+
+.resize-handle.left {
+    right: -6px;
+    /* Centered on the border */
+    /* Ensure it's not clipped if container allows overflow, 
+       otherwise use right: 0 with inner visual */
+    right: 0;
+}
+
+.resize-handle.right {
+    left: 0;
+}
+
+
+/* Updated Side Panel for Overlay */
+.side-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    z-index: 500;
+    background-color: var(--card-bg);
+    border-left: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-panel.open {
+    opacity: 1;
+}
+
+.side-panel-handle {
+    position: absolute;
+    top: 50%;
+    /* right is now dynamic via JSX style prop */
+    transform: translateY(-50%);
+    width: 24px;
+    height: 48px;
+    background: var(--card-bg);
     color: var(--text-color);
-    opacity: 0.6;
-    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    z-index: 501;
+    /* Higher than panel */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.05);
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s, color 0.2s;
+}
+
+
+
+.side-panel-handle:hover {
+    background: var(--surface-color);
+    color: var(--primary-color);
+}
+
+/* Responsive adjustments for panel */
+@media (max-width: 768px) {
+    .side-panel.open {
+        width: 300px;
+        min-width: 300px;
+    }
+
+    .side-panel-handle.open {
+        right: 300px;
+    }
 }

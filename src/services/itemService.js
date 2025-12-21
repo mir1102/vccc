@@ -1,5 +1,5 @@
 import { db } from '../lib/firebase';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where, orderBy, Timestamp, setDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDocsFromServer, updateDoc, deleteDoc, doc, query, where, orderBy, Timestamp, setDoc } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'items';
 
@@ -65,33 +65,33 @@ export const itemService = {
     // Get All Items (with Caching)
     getAllItems: async (userId) => {
         // Return Cache if available
-        if (_itemsCache) {
-            // Optional: Trigger background refresh? For now, just return cache for specific speediness.
-            // We can add a mechanism to force refresh if needed.
-            return _itemsCache;
-        }
+        // Return Cache if available -- DISABLED to force Server Fetch for Data Consistency
+        // if (_itemsCache) {
+        //    return _itemsCache;
+        // }
 
         try {
             const q = query(
                 collection(db, COLLECTION_NAME),
-                where("userId", "==", userId),
-                orderBy("createdAt", "desc")
+                where("userId", "==", userId)
+                // orderBy("createdAt", "desc") // Removed to allow index deletion
             );
-            const snapshot = await getDocs(q);
+            const snapshot = await getDocsFromServer(q);
             const data = snapshotToData(snapshot);
+
+            // Client-side Sort (Desc)
+            data.sort((a, b) => {
+                const dateA = a.createdAt?.getTime ? a.createdAt.getTime() : new Date(a.createdAt).getTime();
+                const dateB = b.createdAt?.getTime ? b.createdAt.getTime() : new Date(b.createdAt).getTime();
+                return dateB - dateA;
+            });
+
             _itemsCache = data; // Set Cache
             return data;
         } catch (error) {
             console.error("Error fetching items: ", error);
-            try {
-                const qRetry = query(collection(db, COLLECTION_NAME), where("userId", "==", userId));
-                const snapshotRetry = await getDocs(qRetry);
-                const data = snapshotToData(snapshotRetry);
-                _itemsCache = data;
-                return data;
-            } catch (e) {
-                return [];
-            }
+            // Fallback empty
+            return [];
         }
     },
 

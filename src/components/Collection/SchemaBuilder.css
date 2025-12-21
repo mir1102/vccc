@@ -1,0 +1,187 @@
+.schema-builder {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
+}
+
+.schema-header label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.schema-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 250px;
+    /* Restrict height */
+    overflow-y: auto;
+    /* Scroll internally */
+    padding-right: 4px;
+    /* Space for scrollbar */
+}
+
+/* Individual Row Group (Main + Extras) */
+.schema-row-group {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Remove transition to prevent rendering glitches with selects on some engines */
+    /* transition: all 0.2s; */
+}
+
+/* Hover effect removed to prevent flickering or z-index issues during select interaction */
+.schema-row-group:hover {
+    border-color: #d1d5db;
+    background: white;
+}
+
+/* Main Row Layout */
+.schema-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: #d1d5db;
+    display: flex;
+    align-items: center;
+}
+
+.col-name-input {
+    flex: 2;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    color: #1f2937;
+    background-color: white;
+}
+
+.col-name-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.col-type-select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background-color: white;
+    /* Force background */
+    color: #1f2937;
+    /* Force text color */
+    cursor: pointer;
+    appearance: auto;
+    /* Ensure native control renders correctly */
+}
+
+/* Force Option Colors */
+.col-type-select option {
+    background-color: white;
+    color: #1f2937;
+}
+
+.remove-col-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-col-btn:hover {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+.add-col-btn {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    color: #4b5563;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-col-btn:hover {
+    background-color: #e5e7eb;
+    color: #1f2937;
+}
+
+/* Formula Builder Styles */
+.formula-builder-row {
+    margin-left: 24px;
+    padding-top: 4px;
+    border-top: 1px dashed #e5e7eb;
+}
+
+.formula-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.formula-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: #fff;
+    font-family: monospace;
+    color: #374151;
+}
+
+.formula-icon {
+    color: #6b7280;
+}
+
+.magic-formula-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background-color: #eff6ff;
+    color: #3b82f6;
+    border: 1px solid #bfdbfe;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.magic-formula-btn:hover {
+    background-color: #dbeafe;
+}
+
+.formula-help {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-left: 24px;
+}

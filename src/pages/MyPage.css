@@ -90,3 +90,20 @@
     color: var(--text-color);
     opacity: 0.6;
 }
+
+.logout-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 12px;
+    background-color: #ffe4e6;
+    color: #e11d48;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #fecdd3;
+}

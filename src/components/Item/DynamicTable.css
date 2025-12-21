@@ -1,0 +1,163 @@
+/* Base Table Styles */
+.dynamic-table-container {
+    flex: 1;
+    overflow: auto;
+    padding: 24px;
+    background-color: var(--bg-color);
+    transition: background-color 0.3s;
+
+    /* Subtle inner shadow for depth */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.dynamic-table {
+    width: 100%;
+    border-collapse: separate;
+    /* Changed for border-radius */
+    border-spacing: 0;
+    table-layout: fixed;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    /* Clips the corners */
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+/* Common Cell Styles */
+.dynamic-table th,
+.dynamic-table td {
+    padding: 0 12px;
+    /* Increased side padding */
+    text-align: left;
+    vertical-align: middle;
+    position: relative;
+    font-size: 0.95rem;
+    height: 48px;
+    /* Taller rows for better touch target */
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    transition: background-color 0.2s;
+}
+
+.dynamic-table th {
+    height: 44px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    user-select: none;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--surface-color);
+    /* Slightly simplified bg */
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Input Base */
+.table-input,
+.add-row-input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 0 4px;
+    font-family: inherit;
+    font-size: inherit;
+    color: var(--text-color);
+    border-radius: 4px;
+}
+
+.table-input:focus,
+.add-row-input:focus {
+    background-color: var(--bg-color);
+    box-shadow: inset 0 0 0 2px var(--primary-color);
+}
+
+/* Row Hover Effect */
+.dynamic-table tbody tr:hover td {
+    background-color: var(--surface-color);
+}
+
+/* =========================================
+   THEME VARIANTS
+   ========================================= */
+
+/* EXCEL (Classic) - Kept largely same but cleaned up */
+.theme-excel .dynamic-table {
+    border: 1px solid #d1d5db;
+    border-radius: 0;
+}
+
+.theme-excel th {
+    background-color: #f3f4f6;
+    border-right: 1px solid #e5e7eb;
+}
+
+.theme-excel td {
+    border-right: 1px solid #f3f4f6;
+}
+
+/* MINIMAL (Clean) */
+.theme-minimal .dynamic-table {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.theme-minimal th {
+    background: transparent;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.theme-minimal td {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.theme-minimal tr:last-child td {
+    border-bottom: none;
+}
+
+/* OCEAN (Blue-ish) */
+.theme-ocean .dynamic-table-container {
+    background-color: #f0f9ff;
+}
+
+.theme-ocean th {
+    background-color: #e0f2fe;
+    color: #0369a1;
+}
+
+.theme-ocean .dynamic-table {
+    border-color: #bae6fd;
+}
+
+/* DARK MODE OVERRIDES handled largely by global vars */
+
+/* Buttons */
+.icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--surface-color);
+    color: var(--primary-color);
+}
+
+.icon-btn.delete:hover {
+    background-color: #fee2e2;
+    color: #ef4444;
+}

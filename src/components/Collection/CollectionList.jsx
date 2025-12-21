@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, LayoutGrid, List as ListIcon, MoreVertical } from 'lucide-react';
+import { Plus, LayoutGrid, List as ListIcon, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { categoryService } from '../../services/categoryService';
+import { useAuth } from '../../context/AuthContext';
+import useLongPress from '../../hooks/useLongPress';
 import Modal from '../UI/Modal';
-import './CategoryList.css';
+import ContextMenu from '../UI/ContextMenu';
+import './CollectionList.css';
 
-import CategoryDetail from '../Item/CategoryDetail';
+import CollectionDetail from '../Item/CollectionDetail';
 
-const CategoryList = ({ onDataChange }) => {
+const CollectionList = ({ onDataChange }) => {
+    const { user } = useAuth();
     const [categories, setCategories] = useState([]);
-    const [viewMode, setViewMode] = useState('card'); // 'card' or 'list'
+    const [viewMode, setViewMode] = useState('list'); // Default and only mode now
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null); // For detail view
 
@@ -21,12 +25,11 @@ const CategoryList = ({ onDataChange }) => {
     // Action Menu State
     const [activeMenuId, setActiveMenuId] = useState(null);
 
-    // Mock User ID
-    const userId = 'demo-user';
-
     useEffect(() => {
-        loadCategories();
-    }, []);
+        if (user?.uid) {
+            loadCategories();
+        }
+    }, [user]);
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -36,16 +39,9 @@ const CategoryList = ({ onDataChange }) => {
     }, []);
 
     const loadCategories = async () => {
-        const data = await categoryService.getCategories(userId);
-        if (data.length === 0) {
-            setCategories([
-                { id: '1', name: '업무', color: '#ef4444', createdAt: new Date() },
-                { id: '2', name: '운동', color: '#22c55e', createdAt: new Date() },
-                { id: '3', name: '취미', color: '#a855f7', createdAt: new Date() }
-            ]);
-        } else {
-            setCategories(data);
-        }
+        if (!user?.uid) return;
+        const data = await categoryService.getCategories(user.uid);
+        setCategories(data);
     };
 
     const openAddModal = () => {
@@ -110,10 +106,12 @@ const CategoryList = ({ onDataChange }) => {
 
             // Background Sync
             try {
-                await categoryService.addCategory(userId, {
-                    name: categoryName,
-                    color: categoryColor
-                }, newId);
+                if (user?.uid) {
+                    await categoryService.addCategory(user.uid, {
+                        name: categoryName,
+                        color: categoryColor
+                    }, newId);
+                }
             } catch (error) {
                 console.error("Failed to add category", error);
                 alert("저장에 실패했습니다.");
@@ -124,7 +122,7 @@ const CategoryList = ({ onDataChange }) => {
     };
 
     const handleDeleteCategory = async (catId) => {
-        if (!window.confirm("정말 이 카테고리를 삭제하시겠습니까?")) return;
+        if (!window.confirm("정말 이 컬렉션을 삭제하시겠습니까?")) return;
 
         const success = await categoryService.deleteCategory(catId);
         if (success) {
@@ -139,27 +137,54 @@ const CategoryList = ({ onDataChange }) => {
         setActiveMenuId(activeMenuId === catId ? null : catId);
     };
 
-    const openCategoryDetail = (category) => {
+    // Context Menu State
+    const [contextMenu, setContextMenu] = useState(null); // { x, y, targetId, item }
+
+    const handleContextMenu = (e, category) => {
+        e.preventDefault();
+        setContextMenu({
+            x: e.pageX,
+            y: e.pageY,
+            targetId: category.id,
+            item: category
+        });
+        setActiveMenuId(null); // Close regular menu if open
+    };
+
+    const handleCloseContextMenu = () => {
+        setContextMenu(null);
+    };
+
+    const openCollectionDetail = (category) => {
+        if (contextMenu) return; // Don't open if context menu is active
         setSelectedCategory(category);
     };
 
     return (
-        <div className="category-list-container">
+        <div className="collection-list-container">
+            {contextMenu && (
+                <ContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    onClose={handleCloseContextMenu}
+                    actions={[
+                        {
+                            label: '수정',
+                            icon: <Edit2 size={16} />,
+                            onClick: () => openEditModal(contextMenu.item)
+                        },
+                        {
+                            label: '삭제',
+                            icon: <Trash2 size={16} />,
+                            danger: true,
+                            onClick: () => handleDeleteCategory(contextMenu.item.id)
+                        }
+                    ]}
+                />
+            )}
             <div className="category-header">
-                <h3>카테고리 ({categories.length})</h3>
+                <h3>컬렉션 ({categories.length})</h3>
                 <div className="category-actions">
-                    <button
-                        className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                        onClick={() => setViewMode('list')}
-                    >
-                        <ListIcon size={18} />
-                    </button>
-                    <button
-                        className={`view-btn ${viewMode === 'card' ? 'active' : ''}`}
-                        onClick={() => setViewMode('card')}
-                    >
-                        <LayoutGrid size={18} />
-                    </button>
                     <button className="add-btn" onClick={openAddModal}>
                         <Plus size={18} />
                         <span>추가</span>
@@ -169,35 +194,20 @@ const CategoryList = ({ onDataChange }) => {
 
             <div className={`categories-grid ${viewMode}`}>
                 {categories.map(cat => (
-                    <div
+                    <CollectionCard
                         key={cat.id}
-                        className="category-card"
-                        style={{ borderColor: cat.color }}
-                        onClick={() => openCategoryDetail(cat)}
-                    >
-                        <div className="cat-color-indicator" style={{ backgroundColor: cat.color }}></div>
-                        <span className="cat-name">{cat.name}</span>
-
-                        <div className="cat-menu-wrapper">
-                            <button className="cat-more" onClick={(e) => toggleMenu(e, cat.id)}>
-                                <MoreVertical size={16} />
-                            </button>
-
-                            {activeMenuId === cat.id && (
-                                <div className="cat-dropdown-menu">
-                                    <button onClick={(e) => { e.stopPropagation(); openEditModal(cat); }}>수정</button>
-                                    <button onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id); }} className="delete-opt">삭제</button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                        cat={cat}
+                        viewMode={viewMode}
+                        onClick={() => openCollectionDetail(cat)}
+                        onContextMenu={(e) => handleContextMenu(e, cat)}
+                    />
                 ))}
             </div>
 
             <Modal
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
-                title={editingCategory ? "카테고리 수정" : "카테고리 추가"}
+                title={editingCategory ? "컬렉션 수정" : "컬렉션 추가"}
             >
                 <form onSubmit={handleSaveCategory} className="add-cat-form">
                     <div className="form-group">
@@ -226,14 +236,14 @@ const CategoryList = ({ onDataChange }) => {
                 </form>
             </Modal>
 
-            {/* Category Detail Modal */}
+            {/* Collection Detail Modal */}
             <Modal
                 isOpen={!!selectedCategory}
                 onClose={() => setSelectedCategory(null)}
                 title={selectedCategory ? selectedCategory.name : ''}
             >
                 {selectedCategory && (
-                    <CategoryDetail
+                    <CollectionDetail
                         category={selectedCategory}
                         onDataChange={onDataChange}
                     />
@@ -243,4 +253,42 @@ const CategoryList = ({ onDataChange }) => {
     );
 };
 
-export default CategoryList;
+// Helper Component for Long Press
+const CollectionCard = ({ cat, viewMode, onClick, onContextMenu }) => {
+    const longPressProps = useLongPress(
+        (e) => {
+            // Long Press Action
+            let clientX, clientY;
+            if (e.touches && e.touches[0]) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            const fakeEvent = {
+                preventDefault: () => { },
+                pageX: clientX + window.scrollX,
+                pageY: clientY + window.scrollY
+            };
+            onContextMenu(fakeEvent);
+        },
+        onClick, // Normal Click Action
+        { shouldPreventDefault: false, delay: 500 }
+    );
+
+    return (
+        <div
+            className="category-card"
+            style={{ borderColor: cat.color }}
+            {...longPressProps}
+            onContextMenu={onContextMenu} // Keep native right click too
+        >
+            <div className="cat-color-indicator" style={{ backgroundColor: cat.color }}></div>
+            <span className="cat-name">{cat.name}</span>
+        </div>
+    );
+};
+
+export default CollectionList;

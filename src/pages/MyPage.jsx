@@ -1,10 +1,12 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { Moon, Sun, Baby, Heart } from 'lucide-react';
 import './MyPage.css';
 
 const MyPage = () => {
     const { theme, setTheme } = useTheme();
+    const { logout, user } = useAuth();
 
     const themes = [
         { id: 'light', name: '기본 (Light)', icon: <Sun size={20} />, color: '#ffffff' },
@@ -39,12 +41,16 @@ const MyPage = () => {
             <section className="settings-group">
                 <h3>계정 정보</h3>
                 <div className="profile-card">
-                    <div className="avatar">U</div>
+                    <div className="avatar">{user?.displayName?.[0] || 'U'}</div>
                     <div className="info">
-                        <p className="name">User Name</p>
-                        <p className="email">guest@example.com</p>
+                        <p className="name">{user?.displayName || '사용자'}</p>
+                        <p className="email">{user?.email || '게스트'}</p>
                     </div>
                 </div>
+
+                <button onClick={logout} className="logout-btn">
+                    로그아웃
+                </button>
             </section>
         </div>
     );

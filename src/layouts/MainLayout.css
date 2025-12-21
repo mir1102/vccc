@@ -7,9 +7,13 @@
 
 .content-area {
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden;
     padding-bottom: var(--nav-height);
-    /* Space for bottom nav */
+    display: flex;
+    flex-direction: column;
+    /* max-width for large screens to maintain app-like feel on desktop? Optional */
+    margin: 0 auto;
+    width: 100%;
 }
 
 .bottom-nav {
@@ -18,13 +22,31 @@
     left: 0;
     width: 100%;
     height: var(--nav-height);
-    background-color: var(--card-bg);
-    border-top: 1px solid var(--border-color);
+
+    /* Glassmorphism Effect */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Fallback */
+    background-color: color-mix(in srgb, var(--card-bg), transparent 15%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border-top: 1px solid rgba(226, 232, 240, 0.6);
+    /* Semi-transparent border */
+
     display: flex;
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
-    box-shadow: var(--shadow);
+    padding-bottom: env(safe-area-inset-bottom);
+    /* iOS Home Indicator Area */
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+    /* Uplift shadow */
+}
+
+/* Dark mode adjustment for glass */
+[data-theme='dark'] .bottom-nav {
+    background-color: rgba(30, 41, 59, 0.85);
+    border-top: 1px solid rgba(51, 65, 85, 0.5);
 }
 
 .nav-item {
@@ -33,17 +55,35 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    color: var(--text-color);
-    opacity: 0.6;
-    font-size: 0.75rem;
-    padding: 4px;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    padding: 8px;
     width: 100%;
     height: 100%;
-    transition: opacity 0.2s, color 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item svg {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Bouncy transition */
 }
 
 .nav-item.active {
-    opacity: 1;
     color: var(--primary-color);
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.nav-item.active svg {
+    transform: translateY(-2px) scale(1.1);
+    stroke-width: 2.5px;
+    filter: drop-shadow(0 4px 6px rgba(59, 130, 246, 0.3));
+    /* Glow effect */
+}
+
+/* Touch Ripple Effect (Optional visual feedback) */
+.nav-item:active {
+    transform: scale(0.95);
 }

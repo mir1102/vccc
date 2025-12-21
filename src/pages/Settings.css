@@ -1,0 +1,297 @@
+.settings-container {
+    background-color: var(--bg-color);
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+.settings-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.settings-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.settings-section h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.setting-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.setting-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.setting-value {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Toggle Area */
+.view-toggle-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Archive List Styles */
+.archived-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.archived-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.archived-item:hover {
+    background: #f3f4f6;
+}
+
+.archived-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.archived-actions button {
+    padding: 6px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #4b5563;
+}
+
+.archived-actions button:hover {
+    background: #e5e7eb;
+}
+
+.archived-actions button.danger:hover {
+    color: #ef4444;
+    background: #fee2e2;
+}
+
+.empty-msg {
+    color: #9ca3af;
+    text-align: center;
+    padding: 20px;
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.toggle-label.active {
+    color: #3b82f6;
+    /* Active blue */
+    font-weight: 600;
+}
+
+/* Switch Component */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e5e7eb;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+input:checked+.slider {
+    background-color: #3b82f6;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #3b82f6;
+}
+
+input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* --- Imported from MyPage --- */
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.theme-card {
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.theme-card .theme-icon {
+    color: inherit;
+    opacity: 0.9;
+}
+
+.theme-card span {
+    font-size: 0.9rem;
+    color: inherit;
+    font-weight: 600;
+}
+
+.theme-card.active {
+    border-color: var(--primary-color);
+    background-color: var(--bg-color);
+    /* Subtle highlight */
+}
+
+.theme-card.active .icon-wrapper {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+.profile-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.info .name {
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 4px 0;
+}
+
+.info .email {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.logout-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 12px;
+    background-color: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #fca5a5;
+}

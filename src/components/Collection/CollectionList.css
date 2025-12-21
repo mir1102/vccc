@@ -1,0 +1,191 @@
+.category-list-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 4px;
+}
+
+.category-header h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-color);
+    letter-spacing: -0.02em;
+}
+
+.category-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--radius-xl);
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-btn:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+}
+
+.add-btn:active {
+    transform: scale(0.96);
+}
+
+/* Grid View */
+.categories-grid.card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    overflow-y: auto;
+    padding: 4px;
+    padding-bottom: 24px;
+    /* Space for bottom shadow */
+}
+
+.category-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-left: 2px solid transparent;
+    /* Re-using or hiding based on design */
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    height: 70px;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+    /* Clean look on hover */
+}
+
+/* Dynamic Color Indicator (Left Border) */
+.category-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: var(--cat-color, #ccc);
+    /* Need to ensure inline style sets this var */
+    /* Or keep the old style logic if inline styles are used on ID */
+}
+
+/* If the component uses inline styles for border-color, adapt: */
+.category-card[style*="border-color"] {
+    border-left-width: 6px;
+}
+
+.cat-name {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 1rem;
+    z-index: 1;
+}
+
+/* List View */
+.categories-grid.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px;
+}
+
+.categories-grid.list .category-card {
+    height: auto;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+}
+
+/* Modal Form Styles */
+.add-cat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"] {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.submit-btn {
+    margin-top: 12px;
+    padding: 14px;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-md);
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.submit-btn:disabled {
+    background-color: var(--border-color);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    box-shadow: none;
+}

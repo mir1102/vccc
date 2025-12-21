@@ -1,0 +1,130 @@
+.archive-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+    /* Space for bottom nav */
+}
+
+.archive-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.archive-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+}
+
+.archived-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    color: var(--text-tertiary);
+    gap: 16px;
+}
+
+.archived-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+}
+
+.archived-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item-text {
+    font-size: 1rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.item-date {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.archived-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.action-btn.restore {
+    background-color: color-mix(in srgb, var(--primary-color), transparent 90%);
+    color: var(--primary-color);
+}
+
+.action-btn.restore:hover {
+    background-color: color-mix(in srgb, var(--primary-color), transparent 80%);
+}
+
+.action-btn.delete {
+    background-color: #fef2f2;
+    /* Light red background usually okay in both themes if text is red */
+    color: #ef4444;
+}
+
+/* Dark mode override for delete button to ensure contrast if needed, but usually fef2f2 is fine. 
+   Let's use a more theme-aware way for delete as well if possible, but standard red/pink is common. */
+[data-theme='dark'] .action-btn.delete {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.action-btn.delete:hover {
+    background-color: #fee2e2;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .archived-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .archived-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

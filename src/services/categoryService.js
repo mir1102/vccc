@@ -1,5 +1,5 @@
 import { db } from '../lib/firebase';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where, orderBy, setDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDocsFromServer, updateDoc, deleteDoc, doc, query, where, orderBy, setDoc } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'categories';
 
@@ -43,11 +43,18 @@ export const categoryService = {
         try {
             const q = query(
                 collection(db, COLLECTION_NAME),
-                where("userId", "==", userId),
-                orderBy("createdAt", "desc")
+                where("userId", "==", userId)
+                // orderBy("createdAt", "desc") // Removed to avoid Index requirement / latency
             );
-            const snapshot = await getDocs(q);
-            return snapshotToData(snapshot);
+            const snapshot = await getDocsFromServer(q);
+            const data = snapshotToData(snapshot);
+
+            // Client-side sort
+            return data.sort((a, b) => {
+                const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                return dateB - dateA; // Descending
+            });
         } catch (error) {
             console.error("Error fetching categories: ", error);
             // Return empty array or mock data for dev
