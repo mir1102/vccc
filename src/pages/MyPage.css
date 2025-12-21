@@ -1,0 +1,92 @@
+.mypage-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.mypage-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.settings-group h3 {
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-bottom: 12px;
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.theme-card {
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.theme-card .icon-wrapper {
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.theme-card span {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.theme-card.active {
+    border-color: var(--primary-color);
+    background-color: var(--surface-color);
+}
+
+.theme-card.active .icon-wrapper {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+.profile-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.info .name {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.info .email {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.6;
+}

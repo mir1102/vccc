@@ -1,0 +1,182 @@
+.calendar-container {
+    padding: 12px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.calendar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.calendar-controls button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    color: var(--text-color);
+    transition: background 0.2s;
+}
+
+.calendar-controls button:hover {
+    background-color: var(--surface-color);
+}
+
+.today-btn {
+    font-size: 0.8rem;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    background-color: var(--surface-color) !important;
+}
+
+.view-mode-selector {
+    display: flex;
+    justify-content: center;
+    background-color: var(--surface-color);
+    border-radius: 8px;
+    padding: 2px;
+    margin-bottom: 16px;
+}
+
+.view-mode-selector button {
+    flex: 1;
+    padding: 6px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    border-radius: 6px;
+    opacity: 0.7;
+}
+
+.view-mode-selector button.active {
+    background-color: var(--card-bg);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* Month View */
+.month-view {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.col {
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: 100%;
+    height: 44px;
+    /* Slightly taller for dots */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* Stack number and dot */
+    cursor: pointer;
+    font-size: 0.9rem;
+    position: relative;
+    border-radius: 8px;
+    /* More modern than circle for cells with dots? or stick to circle */
+    margin: 2px;
+}
+
+/* Adjust circle for just the number/content wrapper if needed, 
+   but simplistic approach: whole cell highlight */
+.col-center {
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: var(--primary-color);
+    height: 30px;
+    flex-direction: row;
+    border-radius: 0;
+}
+
+.cell {
+    transition: background 0.2s;
+    border-radius: 50%;
+    /* Keep circular interaction area */
+}
+
+.cell:hover:not(.disabled) {
+    background-color: var(--surface-color);
+}
+
+.cell.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.cell.today {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.cell.today.selected {
+    color: white;
+}
+
+.cell.disabled {
+    color: var(--text-color);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.placeholder-view {
+    padding: 40px;
+    text-align: center;
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
+/* Event Indicators */
+.dot {
+    width: 4px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    margin-top: 2px;
+}
+
+.cell.selected .dot {
+    background-color: white;
+}
+
+.cell.today .dot {
+    background-color: var(--primary-color);
+}
+
+/* Daily Agenda */
+.daily-agenda {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.daily-agenda h4 {
+    margin-bottom: 12px;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 600;
+}

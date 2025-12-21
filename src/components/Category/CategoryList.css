@@ -1,0 +1,255 @@
+.category-list-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.category-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.category-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--text-color);
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.view-btn:hover {
+    background-color: var(--surface-color);
+    opacity: 0.8;
+}
+
+.view-btn.active {
+    background-color: var(--surface-color);
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-left: 8px;
+    transition: background-color 0.2s;
+}
+
+.add-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Grid View */
+.categories-grid.card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.category-card {
+    background-color: var(--card-bg);
+    /* Or slightly different */
+    border: 1px solid var(--border-color);
+    border-left-width: 4px;
+    /* Color indicator */
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    position: relative;
+    /* For dropdown positioning */
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.cat-color-indicator {
+    display: none;
+    /* Used as border-left instead */
+}
+
+.cat-name {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.cat-more {
+    opacity: 0;
+    transition: opacity 0.2s;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.cat-more:hover {
+    background-color: var(--surface-color);
+}
+
+.category-card:hover .cat-more {
+    opacity: 0.5;
+}
+
+.category-card:hover .cat-more:hover {
+    opacity: 1;
+}
+
+/* List View */
+.categories-grid.list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+}
+
+.categories-grid.list .category-card {
+    border-left-width: 4px;
+    padding: 10px 16px;
+    flex-direction: row;
+}
+
+/* Modal Form Styles */
+.add-cat-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-group input[type="text"] {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.form-group input[type="text"]:focus {
+    outline: 2px solid var(--primary-color);
+    border-color: transparent;
+}
+
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-picker-wrapper input[type="color"] {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: none;
+}
+
+.submit-btn {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.submit-btn:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+/* Dropdown Menu */
+.cat-menu-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.cat-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    overflow: hidden;
+    animation: fadeIn 0.1s ease;
+}
+
+.cat-dropdown-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cat-dropdown-menu button:hover {
+    background-color: var(--surface-color);
+}
+
+.cat-dropdown-menu button.delete-opt {
+    color: #ef4444;
+}
+
+.cat-dropdown-menu button.delete-opt:hover {
+    background-color: #fef2f2;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

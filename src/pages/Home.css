@@ -1,0 +1,104 @@
+.home-container {
+    padding: 16px;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+}
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.home-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Wrapper for the split view content */
+/* We need to apply this grid structure to the parent container actually, but since Home.jsx
+   doesn't have a wrapper div around sections, we'll assume we can use the container directly
+   if we had one. But Home.jsx has flat children: header, calendar-section, categories-section.
+   
+   So we can target the container grid logic:
+*/
+
+@media (min-width: 1024px) {
+    .home-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+            "header header"
+            "calendar categories";
+        overflow: hidden;
+        /* Prevent body scroll, scroll inside sections */
+    }
+
+    .home-header {
+        grid-area: header;
+    }
+
+    .calendar-section {
+        grid-area: calendar;
+        overflow-y: auto;
+    }
+
+    .categories-section {
+        grid-area: categories;
+        overflow-y: auto;
+    }
+}
+
+.calendar-section {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    height: 100%;
+    /* Fill the grid area */
+    display: flex;
+    flex-direction: column;
+}
+
+.categories-section {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    height: 100%;
+    /* Fill the grid area */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mobile specific adjustments if needed */
+@media (max-width: 1023px) {
+    .home-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .calendar-section {
+        min-height: 480px;
+        /* Ensure calendar has space */
+    }
+
+    .categories-section {
+        flex: 1;
+        min-height: 300px;
+    }
+}
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: var(--text-color);
+    opacity: 0.6;
+    font-size: 0.9rem;
+}

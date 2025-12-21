@@ -1,0 +1,48 @@
+:root {
+    /* Default Theme (Modern Dark/Light Neutral) */
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --bg-color: #ffffff;
+    --text-color: #1f2937;
+    --surface-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+    --nav-height: 60px;
+}
+
+[data-theme='dark'] {
+    --primary-color: #60a5fa;
+    --primary-hover: #3b82f6;
+    --bg-color: #111827;
+    --text-color: #f9fafb;
+    --surface-color: #1f2937;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+}
+
+[data-theme='kids'] {
+    --primary-color: #f59e0b;
+    /* Amber */
+    --primary-hover: #d97706;
+    --bg-color: #fffbeb;
+    --text-color: #451a03;
+    --surface-color: #fef3c7;
+    --card-bg: #ffffff;
+    --border-color: #fcd34d;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+    /* Playful fonts can be set here if imported */
+}
+
+[data-theme='gentle'] {
+    --primary-color: #ec4899;
+    /* Pink */
+    --primary-hover: #db2777;
+    --bg-color: #fdf2f8;
+    --text-color: #831843;
+    --surface-color: #fce7f3;
+    --card-bg: #ffffff;
+    --border-color: #fbcfe8;
+}
