@@ -255,7 +255,7 @@ const CollectionList = ({ onDataChange }) => {
 
 // Helper Component for Long Press
 const CollectionCard = ({ cat, viewMode, onClick, onContextMenu }) => {
-    const longPressProps = useLongPress(
+    const { cancel, ...longPressHandlers } = useLongPress(
         (e) => {
             // Long Press Action
             let clientX, clientY;
@@ -282,7 +282,7 @@ const CollectionCard = ({ cat, viewMode, onClick, onContextMenu }) => {
         <div
             className="category-card"
             style={{ borderColor: cat.color }}
-            {...longPressProps}
+            {...longPressHandlers}
             onContextMenu={onContextMenu} // Keep native right click too
         >
             <div className="cat-color-indicator" style={{ backgroundColor: cat.color }}></div>

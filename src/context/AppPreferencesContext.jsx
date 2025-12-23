@@ -8,8 +8,10 @@ export const AppPreferencesProvider = ({ children }) => {
     // Persistent View Mode (Calendar vs Data)
     const [homeViewMode, setHomeViewMode] = useState(() => localStorage.getItem('homeViewMode') || 'calendar');
 
-    // we can add global theme state here later if needed
-    // const [globalTheme, setGlobalTheme] = useState('light');
+    // Selection & UI States
+    const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
 
     const updateHomeViewMode = (mode) => {
         setHomeViewMode(mode);
@@ -18,7 +20,13 @@ export const AppPreferencesProvider = ({ children }) => {
 
     const value = {
         homeViewMode,
-        updateHomeViewMode
+        updateHomeViewMode,
+        selectedCategoryId,
+        setSelectedCategoryId,
+        isSidebarCollapsed,
+        setIsSidebarCollapsed,
+        isSidePanelOpen,
+        setIsSidePanelOpen
     };
 
     return (

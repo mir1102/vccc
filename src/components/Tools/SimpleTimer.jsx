@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, X } from 'lucide-react';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 import Modal from '../UI/Modal';
 
 const SimpleTimer = ({ isOpen, onClose, initialMinutes = 25 }) => {
     const [timeLeft, setTimeLeft] = useState(initialMinutes * 60);
     const [isActive, setIsActive] = useState(false);
-    const [mode, setMode] = useState('focus'); // focus | break
+    const [mode, setMode] = useState('focus'); // focus | break | long-focus
+    const [pomodoros, setPomodoros] = useState(0);
 
     useEffect(() => {
         let interval = null;
@@ -13,20 +14,34 @@ const SimpleTimer = ({ isOpen, onClose, initialMinutes = 25 }) => {
             interval = setInterval(() => {
                 setTimeLeft(timeLeft - 1);
             }, 1000);
-        } else if (timeLeft === 0) {
+        } else if (timeLeft === 0 && isActive) {
             setIsActive(false);
-            if (Notification.permission === 'granted') {
-                new Notification("타이머 종료!", { body: "설정하신 시간이 다 되었습니다." });
-            } else {
-                alert("딩동! 시간이 다 되었습니다. ⏰");
-            }
+            handleTimerComplete();
         }
         return () => clearInterval(interval);
     }, [isActive, timeLeft]);
 
+    const handleTimerComplete = () => {
+        const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'); // Simple beep
+        audio.play().catch(e => console.log('Audio play failed', e));
+
+        if (mode === 'focus' || mode === 'long-focus') {
+            setPomodoros(p => p + 1);
+            if (Notification.permission === 'granted') {
+                new Notification("집중 완료! 🍅", { body: "수고하셨습니다. 5분 휴식을 취해보세요." });
+            }
+        } else {
+            if (Notification.permission === 'granted') {
+                new Notification("휴식 종료! ⚡", { body: "충전 완료! 다시 집중해볼까요?" });
+            }
+        }
+    };
+
     const toggleTimer = () => setIsActive(!isActive);
+
     const resetTimer = () => {
         setIsActive(false);
+        setMode('focus');
         setTimeLeft(initialMinutes * 60);
     };
 
@@ -42,11 +57,18 @@ const SimpleTimer = ({ isOpen, onClose, initialMinutes = 25 }) => {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const progress = 100 - (timeLeft / (initialMinutes * 60)) * 100;
+    // Progress calculation
+    const totalSeconds = mode === 'break' ? 5 * 60 : (mode === 'long-focus' ? 50 * 60 : 25 * 60);
+    const progress = 100 - (timeLeft / totalSeconds) * 100;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="집중 타이머">
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+
+                {/* Pomodoro Count */}
+                <div style={{ marginBottom: '20px', fontSize: '1.2rem', color: '#ef4444' }}>
+                    {pomodoros > 0 ? Array(pomodoros).fill('🍅').join(' ') : '오늘도 힘차게 집중해봐요!'}
+                </div>
 
                 {/* Presets */}
                 <div style={{ display: 'flex', gap: '8px', marginBottom: '30px' }}>
@@ -57,7 +79,7 @@ const SimpleTimer = ({ isOpen, onClose, initialMinutes = 25 }) => {
                         🔥 집중 25분
                     </button>
                     <button
-                        onClick={() => setDuration(50, 'focus')}
+                        onClick={() => setDuration(50, 'long-focus')}
                         style={{ padding: '8px 16px', borderRadius: '20px', border: 'none', background: mode === 'long-focus' ? '#3b82f6' : '#e5e7eb', color: mode === 'long-focus' ? 'white' : '#374151', cursor: 'pointer', fontWeight: 'bold' }}
                     >
                         🔥 50분

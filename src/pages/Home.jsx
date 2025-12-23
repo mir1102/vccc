@@ -8,15 +8,25 @@ import SchemaBuilder from '../components/Collection/SchemaBuilder';
 import { categoryService } from '../services/categoryService';
 import { itemService } from '../services/itemService'; // Import
 import { useAuth } from '../context/AuthContext';
+import { useAppPreferences } from '../context/AppPreferencesContext';
 import './Home.css';
 
 const Home = () => {
     const { user } = useAuth();
-    const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const {
+        homeViewMode,
+        updateHomeViewMode,
+        selectedCategoryId,
+        setSelectedCategoryId,
+        isSidebarCollapsed,
+        setIsSidebarCollapsed,
+        isSidePanelOpen,
+        setIsSidePanelOpen
+    } = useAppPreferences();
 
-    // Main View Toggle State
-    const [mainViewMode, setMainViewMode] = useState(() => localStorage.getItem('homeViewMode') || 'calendar');
+    const [categories, setCategories] = useState([]);
+    // selectedCategory is now derived from selectedCategoryId
+    const selectedCategory = categories.find(c => c.id === selectedCategoryId) || null;
 
     // Load Categories
     useEffect(() => {
@@ -33,9 +43,11 @@ const Home = () => {
 
     // Persist View Mode
     const handleViewModeChange = (mode) => {
-        setMainViewMode(mode);
-        localStorage.setItem('homeViewMode', mode);
+        updateHomeViewMode(mode);
     };
+
+    // Use homeViewMode from context
+    const mainViewMode = homeViewMode;
 
     // Add/Edit Collection Modal State
     const [editingCategory, setEditingCategory] = useState(null);
@@ -45,6 +57,7 @@ const Home = () => {
     const [newCollectionName, setNewCollectionName] = useState('');
     const [newCollectionColor, setNewCollectionColor] = useState('#3b82f6');
     const [newCollectionSchema, setNewCollectionSchema] = useState([]); // Array of { id, name, type }
+    const [newCollectionParentId, setNewCollectionParentId] = useState(null); // Parent ID for hierarchy
 
     const handleDataChange = () => {
         // Just reload items if needed, or maybe categories too if items affect counts (not yet)
@@ -81,19 +94,12 @@ const Home = () => {
             // Update local categories list immediately
             setCategories(prev => prev.map(c => c.id === editingCategory.id ? updatedCategory : c));
 
-            // Update selected category if it's the one being edited
-            if (selectedCategory && selectedCategory.id === editingCategory.id) {
-                console.log("Updating Selected Category State");
-                setSelectedCategory(updatedCategory);
-            } else {
-                console.log("Skipping Selected Category Update");
-            }
-
             // Sync to Backend
             await categoryService.updateCategory(editingCategory.id, {
                 name: newCollectionName,
                 color: newCollectionColor,
-                schema: newCollectionSchema
+                schema: newCollectionSchema,
+                parentId: editingCategory.parentId // Keep existing parentId on edit for now
             });
 
             await loadCategories(); // Force Sync
@@ -101,13 +107,23 @@ const Home = () => {
         } else {
             // Create New - Optimistic
             const newId = categoryService.getNewId();
+
+            // Determine order: max(order) + 1 for items with same parent
+            const siblings = categories.filter(c => c.parentId === newCollectionParentId);
+            const maxOrder = siblings.length > 0
+                ? Math.max(...siblings.map(s => s.order ?? 0))
+                : -1;
+            const newOrder = maxOrder + 1;
+
             updatedCategory = {
                 id: newId,
                 userId: user.uid,
                 name: newCollectionName,
                 color: newCollectionColor,
                 schema: newCollectionSchema,
-                createdAt: new Date() // Temporary stamp
+                parentId: newCollectionParentId,
+                order: newOrder,
+                createdAt: new Date()
             };
 
             // Update local list
@@ -117,7 +133,9 @@ const Home = () => {
             await categoryService.addCategory(user.uid, {
                 name: newCollectionName,
                 color: newCollectionColor,
-                schema: newCollectionSchema
+                schema: newCollectionSchema,
+                parentId: newCollectionParentId,
+                order: newOrder
             }, newId);
         }
 
@@ -128,14 +146,55 @@ const Home = () => {
         setNewCollectionName('');
         setNewCollectionColor('#3b82f6');
         setNewCollectionSchema([]); // Reset schema
+        setNewCollectionParentId(null);
         setEditingCategory(null);
+    };
+
+    const handleReorderCollection = async (draggedId, targetId, position) => {
+        if (!draggedId || !targetId || draggedId === targetId) return;
+
+        const draggedItem = categories.find(c => c.id === draggedId);
+        const targetItem = categories.find(c => c.id === targetId);
+        if (!draggedItem || !targetItem) return;
+
+        // Restriction: Only allow reordering between siblings (same parent)
+        if ((draggedItem.parentId || null) !== (targetItem.parentId || null)) return;
+
+        const sameParentId = draggedItem.parentId || null;
+
+        // Get sorted siblings excluding the dragged one
+        let siblings = categories
+            .filter(c => (c.parentId || null) === sameParentId && c.id !== draggedId)
+            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        const targetIdx = siblings.findIndex(s => s.id === targetId);
+        if (targetIdx === -1) return;
+
+        // Insert at new index
+        const insertIdx = position === 'above' ? targetIdx : targetIdx + 1;
+        siblings.splice(insertIdx, 0, draggedItem);
+
+        // Update orders sequentially
+        const updates = siblings.map((s, i) => ({ id: s.id, order: i }));
+
+        // Optimistic update
+        setCategories(prev => prev.map(c => {
+            const update = updates.find(u => u.id === c.id);
+            return update ? { ...c, order: update.order } : c;
+        }));
+
+        // Persist
+        const persistPromises = updates.map(u =>
+            categoryService.updateCategory(u.id, { order: u.order })
+        );
+        await Promise.all(persistPromises);
     };
 
     const handleDeleteCollection = async (catId) => {
         // Optimistic update
         setCategories(prev => prev.filter(c => c.id !== catId));
-        if (selectedCategory && selectedCategory.id === catId) {
-            setSelectedCategory(null);
+        if (selectedCategoryId === catId) {
+            setSelectedCategoryId(null);
         }
         await categoryService.deleteCategory(catId);
     };
@@ -146,10 +205,9 @@ const Home = () => {
         setNewCollectionName('');
         setNewCollectionColor('#3b82f6');
         setNewCollectionSchema([]);
+        setNewCollectionParentId(null);
         setEditingCategory(null);
     };
-
-    const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
 
     // --- QUICK ADD LOGIC (Global) ---
     const [isQuickAddModalOpen, setIsQuickAddModalOpen] = useState(false);
@@ -221,20 +279,19 @@ const Home = () => {
     const [calendarRefreshTrigger, setCalendarRefreshTrigger] = useState(0);
 
     // Fixed widths as per user request (Resize removed)
+    // Fixed widths as per user request (Resize removed)
     const LEFT_SIDEBAR_WIDTH = 260;
     const COLLAPSED_SIDEBAR_WIDTH = 70; // Width when collapsed
     const RIGHT_PANEL_WIDTH = 500; // Increased default for better Calendar visibility
 
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-    // Calculate current widths based on state
+    // Calculate current widths based on state from context
     const currentSidebarWidth = isSidebarCollapsed ? COLLAPSED_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH;
 
     // Derive activeCategory from selectedCategory state
     const activeCategory = selectedCategory;
 
     return (
-        <div className="home-container">
+        <div className="home-container notranslate">
 
             {/* Content Area with Side Panel */}
             <div className="home-content-wrapper" style={{ display: 'flex', width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
@@ -245,7 +302,6 @@ const Home = () => {
                         <div className="calendar-section full-height">
                             <CalendarView
                                 refreshTrigger={calendarRefreshTrigger}
-                                onQuickAdd={handleCalendarQuickAdd}
                             />
                         </div>
                     ) : (
@@ -261,17 +317,18 @@ const Home = () => {
                             }}>
                                 <CollectionSidebar
                                     categories={categories}
-                                    selectedCategoryId={activeCategory?.id}
-                                    onSelectCategory={(cat) => setSelectedCategory(cat)}
+                                    selectedCategoryId={selectedCategoryId}
+                                    onSelectCategory={(cat) => setSelectedCategoryId(cat.id)}
                                     // Pass Toggle state
                                     isCollapsed={isSidebarCollapsed}
                                     onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
 
-                                    onAddCollection={() => {
+                                    onAddCollection={(parentId = null) => {
                                         setEditingCategory(null);
                                         setNewCollectionName('');
                                         setNewCollectionColor('#3b82f6');
                                         setNewCollectionSchema([]);
+                                        setNewCollectionParentId(parentId);
                                         setModalStep(1);
                                         setIsAddModalOpen(true);
                                     }}
@@ -280,6 +337,7 @@ const Home = () => {
                                         setModalStep(1);
                                     }}
                                     onDeleteCollection={handleDeleteCollection}
+                                    onReorderCollection={handleReorderCollection}
                                 />
                             </div>
 
@@ -341,18 +399,21 @@ const Home = () => {
                             <div className="bottom-split-view full-height" style={{ borderRadius: 0 }}>
                                 <CollectionSidebar
                                     categories={categories}
-                                    selectedCategoryId={activeCategory?.id}
-                                    onSelectCategory={(cat) => setSelectedCategory(cat)}
-                                    // ... other props ...
-                                    onAddCollection={() => { /* ... */ }}
-                                    onEditCollection={() => { /* ... */ }}
+                                    selectedCategoryId={selectedCategoryId}
+                                    onSelectCategory={(cat) => setSelectedCategoryId(cat.id)}
+                                    // Pass Toggle state
+                                    isCollapsed={isSidebarCollapsed}
+                                    onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                                    onAddCollection={() => { }}
+                                    onEditCollection={() => { }}
                                     onDeleteCollection={handleDeleteCollection}
+                                    onReorderCollection={handleReorderCollection}
                                 />
                                 {activeCategory && (
                                     <div className="main-content-area" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, background: 'var(--bg-color)', display: activeCategory ? 'flex' : 'none' }}>
                                         <div className="collection-view" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
                                             <div className="collection-header" style={{ padding: '12px', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', backgroundColor: 'var(--card-bg)' }}>
-                                                <button onClick={() => setSelectedCategory(null)} style={{ marginRight: '8px', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--text-color)' }}>← 목록</button>
+                                                <button onClick={() => setSelectedCategoryId(null)} style={{ marginRight: '8px', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--text-color)' }}>← 목록</button>
                                                 <h2 style={{ color: activeCategory.color, fontSize: '1.2rem', margin: 0 }}>{activeCategory.name}</h2>
                                             </div>
                                             <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -435,6 +496,7 @@ const Home = () => {
                 isOpen={isAddModalOpen}
                 onClose={handleCloseModal}
                 title={editingCategory ? "컬렉션 수정" : "새 컬렉션 만들기"}
+                className="notranslate"
             >
                 <div className="wizard-container">
                     {/* Step Indicator */}

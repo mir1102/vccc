@@ -3,6 +3,35 @@ import './ContextMenu.css';
 
 const ContextMenu = ({ x, y, onClose, actions }) => {
     const menuRef = useRef(null);
+    const [position, setPosition] = React.useState({ top: y, left: x, opacity: 0 });
+
+    React.useLayoutEffect(() => {
+        if (menuRef.current) {
+            const rect = menuRef.current.getBoundingClientRect();
+            let newTop = y;
+            let newLeft = x;
+
+            // Vertical adjustments
+            if (y + rect.height > window.innerHeight) {
+                // If it overflows bottom, flip upwards
+                newTop = y - rect.height;
+                // If flipping up goes off-screen top, clamp to 0 or center
+                if (newTop < 0) {
+                    // If too tall for screen, align to bottom or scroll? 
+                    // Simple clamp:
+                    newTop = window.innerHeight - rect.height - 10;
+                }
+            }
+
+            // Horizontal adjustments
+            if (x + rect.width > window.innerWidth) {
+                newLeft = x - rect.width;
+                if (newLeft < 0) newLeft = 10;
+            }
+
+            setPosition({ top: newTop, left: newLeft, opacity: 1 });
+        }
+    }, [x, y]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -26,17 +55,15 @@ const ContextMenu = ({ x, y, onClose, actions }) => {
         };
     }, [onClose]);
 
-    // Prevent menu from going off-screen
+    // Apply calculated position
     const style = {
-        top: y,
-        left: x,
+        top: position.top,
+        left: position.left,
+        opacity: position.opacity, // Prevent flash
+        pointerEvents: position.opacity === 0 ? 'none' : 'auto', // Prevent clicks while hidden
+        position: 'fixed', // Ensure it's relative to viewport for correct logic
+        zIndex: 1000
     };
-
-    // Simple adjustment if close to right edge (can be improved with measuring ref)
-    if (window.innerWidth - x < 150) {
-        style.left = 'auto';
-        style.right = window.innerWidth - x;
-    }
 
     return (
         <div

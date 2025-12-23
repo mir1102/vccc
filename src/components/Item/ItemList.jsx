@@ -6,11 +6,12 @@ import SimpleTimer from '../Tools/SimpleTimer';
 import useLongPress from '../../hooks/useLongPress';
 import './ItemList.css';
 
-const ItemList = ({ items, viewMode, onItemToggle, onItemDelete, onItemEdit, onItemUpdate }) => {
+const ItemList = ({ items, viewMode, onItemToggle, onItemDelete, onItemEdit, onItemUpdate, selectionMode, selectedItems, onSelectItem }) => {
     const [contextMenu, setContextMenu] = useState(null);
     const [isTimerOpen, setIsTimerOpen] = useState(false);
 
     const handleContextMenu = (e, item) => {
+        if (selectionMode) return; // Disable context menu in selection mode
         e.preventDefault();
         setContextMenu({
             x: e.pageX,
@@ -21,7 +22,7 @@ const ItemList = ({ items, viewMode, onItemToggle, onItemDelete, onItemEdit, onI
 
     const handleCloseContextMenu = () => setContextMenu(null);
 
-    // Action Logic (Duplicated from DynamicTable - consider lifting to hook if grows)
+    // Action Logic
     const handleDoTomorrow = async (item) => {
         const tomorrow = addDays(new Date(), 1);
         await onItemUpdate(item.id, { date: tomorrow });
@@ -91,6 +92,9 @@ const ItemList = ({ items, viewMode, onItemToggle, onItemDelete, onItemEdit, onI
                         item={item}
                         onContextMenu={(e) => handleContextMenu(e, item)}
                         onToggle={onItemToggle}
+                        selectionMode={selectionMode}
+                        isSelected={selectedItems?.has(item.id)}
+                        onSelect={() => onSelectItem(item.id)}
                     />
                 ))}
         </div>
@@ -98,10 +102,12 @@ const ItemList = ({ items, viewMode, onItemToggle, onItemDelete, onItemEdit, onI
 };
 
 // Helper Component
-const ItemCard = ({ item, onContextMenu, onToggle }) => {
-    const longPressProps = useLongPress(
+const ItemCard = ({ item, onContextMenu, onToggle, selectionMode, isSelected, onSelect }) => {
+    const { cancel, ...longPressHandlers } = useLongPress(
         (e) => {
-            // Long Press
+            if (selectionMode) return; // Disable context menu in selection mode
+            // Long Press Logic
+            // ... (Same as before)
             let clientX, clientY;
             if (e.touches && e.touches[0]) {
                 clientX = e.touches[0].clientX;
@@ -118,23 +124,46 @@ const ItemCard = ({ item, onContextMenu, onToggle }) => {
             onContextMenu(fakeEvent);
         },
         () => {
-            // Click Handled by native elements usually, but here we can add item click logic if needed
+            // Click Logic
+            if (selectionMode) {
+                onSelect();
+            }
         },
         { delay: 500 }
     );
 
     return (
         <div
-            className={`item-card ${item.isCompleted ? 'completed' : ''}`}
-            onContextMenu={onContextMenu}
-            {...longPressProps}
+            className={`item-card ${item.isCompleted ? 'completed' : ''} ${isSelected ? 'selected' : ''}`}
+            onContextMenu={!selectionMode ? onContextMenu : (e) => e.preventDefault()}
+            onClick={() => selectionMode && onSelect()}
+            {...longPressHandlers}
+            style={isSelected ? { border: '2px solid #3b82f6', background: '#eff6ff' } : {}}
         >
+            {selectionMode && (
+                <div style={{ marginRight: '10px' }}>
+                    <div style={{
+                        width: '18px', height: '18px',
+                        borderRadius: '4px', border: isSelected ? 'none' : '2px solid #ccc',
+                        background: isSelected ? '#3b82f6' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                        {isSelected && <Check size={12} color="white" />}
+                    </div>
+                </div>
+            )}
+
             <div className="item-content-wrapper">
                 <span className="item-text">{item.content}</span>
                 {item.date && (
                     <div className="item-meta">
                         <Calendar size={12} />
                         <span>{format(item.date, 'MM.dd')}</span>
+                        {(item.hasTime || (item.startTime && !item.isAllDay)) && (
+                            <span style={{ marginLeft: '4px', fontWeight: '500' }}>
+                                {item.startTime || format(item.date, 'HH:mm')}
+                            </span>
+                        )}
                         {item.reminderAt && (
                             <span style={{ marginLeft: '8px', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '2px' }}>
                                 <Bell size={10} /> {item.reminderAt}
@@ -149,15 +178,17 @@ const ItemCard = ({ item, onContextMenu, onToggle }) => {
                 )}
             </div>
 
-            <div className="item-actions">
-                <button
-                    className={`action-btn check ${item.isCompleted ? 'active' : ''}`}
-                    onClick={(e) => { e.stopPropagation(); onToggle(item.id, !item.isCompleted); }}
-                >
-                    <Check size={16} />
-                </button>
-                {/* Delete button kept for quick access, or can rely on context menu */}
-            </div>
+            {!selectionMode && (
+                <div className="item-actions">
+                    <button
+                        className={`action-btn check ${item.isCompleted ? 'active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); onToggle(item.id, !item.isCompleted); }}
+                    >
+                        <Check size={16} />
+                    </button>
+                    {/* Delete button kept for quick access, or can rely on context menu */}
+                </div>
+            )}
         </div>
     );
 };

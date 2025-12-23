@@ -45,7 +45,11 @@ const useLongPress = (onLongPress, onClick, { shouldPreventDefault = true, delay
         onTouchStart: (e) => start(e),
         onMouseUp: (e) => clear(e),
         onMouseLeave: (e) => clear(e, false),
-        onTouchEnd: (e) => clear(e)
+        onTouchEnd: (e) => clear(e),
+        cancel: () => {
+            timeout.current && clearTimeout(timeout.current);
+            setLongPressTriggered(false);
+        }
     };
 };
 

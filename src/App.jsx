@@ -55,6 +55,8 @@ const InnerApp = () => {
           {/* Redirect /my to /settings for backward compatibility */}
           <Route path="my" element={<Navigate to="/settings" replace />} />
           <Route path="settings" element={<Settings />} />
+          {/* Catch all for 404s */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>

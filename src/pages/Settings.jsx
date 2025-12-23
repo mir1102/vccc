@@ -8,7 +8,8 @@ import './Settings.css';
 
 const Settings = () => {
     const { theme, setTheme } = useTheme();
-    const { signOut, user } = useAuth(); // Corrected from logout to signOut based on AuthContext usually
+    const { signOut, user } = useAuth();
+    const { homeViewMode, updateHomeViewMode } = useAppPreferences();
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
@@ -55,6 +56,34 @@ const Settings = () => {
                 <button className="sign-out-btn" onClick={signOut}>
                     <LogOut size={16} /> 로그아웃
                 </button>
+            </div>
+
+            {/* General Settings */}
+            <div className="settings-section">
+                <div className="section-header">
+                    <RefreshCcw size={20} />
+                    <h2>일반 설정</h2>
+                </div>
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>시작 화면 설정</h3>
+                        <p>앱을 열었을 때 먼저 보여줄 화면을 선택합니다.</p>
+                    </div>
+                    <div className="view-mode-toggle">
+                        <button
+                            className={`mode-btn ${homeViewMode === 'calendar' ? 'active' : ''}`}
+                            onClick={() => updateHomeViewMode('calendar')}
+                        >
+                            캘린더
+                        </button>
+                        <button
+                            className={`mode-btn ${homeViewMode === 'data' ? 'active' : ''}`}
+                            onClick={() => updateHomeViewMode('data')}
+                        >
+                            데이터 (컬렉션)
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Notification Section */}

@@ -25,6 +25,7 @@ export const categoryService = {
             };
 
             if (customId) {
+                // For manual creation with ID
                 await setDoc(doc(db, COLLECTION_NAME, customId), dataToSave);
                 return { id: customId, ...dataToSave };
             } else {
@@ -34,7 +35,7 @@ export const categoryService = {
         } catch (error) {
             console.error("Error adding category: ", error);
             // Fallback for demo without real auth/db
-            return { id: customId || Date.now().toString(), ...categoryData };
+            return { id: customId || Date.now().toString(), ...dataToSave };
         }
     },
 
@@ -44,20 +45,23 @@ export const categoryService = {
             const q = query(
                 collection(db, COLLECTION_NAME),
                 where("userId", "==", userId)
-                // orderBy("createdAt", "desc") // Removed to avoid Index requirement / latency
             );
             const snapshot = await getDocsFromServer(q);
             const data = snapshotToData(snapshot);
+            console.log("Categories from Firestore:", data); // DEBUG
 
-            // Client-side sort
+            // Sort logic: Primary = order (asc), Secondary = createdAt (desc)
             return data.sort((a, b) => {
+                const orderA = a.order ?? 0;
+                const orderB = b.order ?? 0;
+                if (orderA !== orderB) return orderA - orderB;
+
                 const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
                 const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
-                return dateB - dateA; // Descending
+                return dateB - dateA;
             });
         } catch (error) {
             console.error("Error fetching categories: ", error);
-            // Return empty array or mock data for dev
             return [];
         }
     },

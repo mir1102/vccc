@@ -1,0 +1,413 @@
+/* EventPopover.css */
+.event-popover-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.event-popover {
+    width: 380px;
+    /* Slightly wider for modal feel */
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    /* overflow: hidden; Removed to allow dropdowns to overflow */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.popover-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.title-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 20px;
+    background: #f8fafc;
+    /* Subtle header bg */
+}
+
+.title-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    font-weight: 600;
+    outline: none;
+    color: #1f2937;
+}
+
+.title-input::placeholder {
+    color: #9ca3af;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* Time Section */
+.date-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 12px;
+}
+
+/* Date Input Styling */
+.date-input {
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.date-input:hover {
+    background: #f3f4f6;
+}
+
+.date-input:focus {
+    background: white;
+    border-color: #3b82f6;
+}
+
+
+.time-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Custom Time Select Styles */
+.custom-time-select {
+    position: relative;
+    width: 90px;
+}
+
+.select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: #374151;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.select-trigger:hover {
+    background: #e5e7eb;
+}
+
+.select-trigger.active {
+    background: white;
+    border-color: #3b82f6;
+}
+
+.options-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    /* Limit height */
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-top: 4px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    list-style: none;
+    padding: 0;
+}
+
+.option-item {
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #374151;
+    cursor: pointer;
+}
+
+.option-item:hover {
+    background: #f3f4f6;
+}
+
+.option-item.selected {
+    background: #eff6ff;
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+/* Scrollbar for options */
+.options-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options-list::-webkit-scrollbar-thumb {
+    background: #e5e7eb;
+    border-radius: 3px;
+}
+
+/* Time Select Styles */
+.time-select {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: #374151;
+    outline: none;
+    background: #f9fafb;
+    cursor: pointer;
+    appearance: none;
+    /* Hide default arrow in some browsers if needed, but keeping for utility */
+}
+
+.time-select:hover {
+    background: #e5e7eb;
+}
+
+.time-select:focus {
+    border-color: #3b82f6;
+    background: white;
+}
+
+.separator {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background-color: #e5e7eb;
+    border-radius: 20px;
+    transition: .3s;
+    display: inline-block;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .3s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+input:checked+.slider {
+    background-color: #3b82f6;
+}
+
+input:checked+.slider:before {
+    transform: translateX(16px);
+}
+
+/* Details Section */
+.details-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    /* More padding */
+}
+
+.color-picker {
+    display: flex;
+    gap: 12px;
+}
+
+.color-chip {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.color-chip:hover {
+    transform: scale(1.1);
+}
+
+.color-chip.selected {
+    transform: scale(1.1);
+    border-color: white;
+    box-shadow: 0 0 0 2px #d1d5db;
+}
+
+.desc-toggle-btn {
+    background: white;
+    border: 1px solid #e5e7eb;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.desc-toggle-btn:hover {
+    background: #f9fafb;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+/* Desc Section */
+.desc-section textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    background: #ffffff !important;
+    /* Force White bg */
+    color: #1f2937 !important;
+    /* Force Dark text */
+}
+
+.desc-section textarea:focus {
+    background: #ffffff !important;
+    border-color: #3b82f6;
+}
+
+/* Footer */
+.popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 20px;
+    background: white;
+    border-top: 1px solid #f3f4f6;
+}
+
+.cancel-btn {
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+    background: #f9fafb;
+}
+
+.save-btn {
+    padding: 8px 20px;
+    border: none;
+    background: #3b82f6;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background 0.2s;
+}
+
+.save-btn:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.save-btn:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}

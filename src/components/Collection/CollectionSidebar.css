@@ -56,16 +56,51 @@
     padding: 12px 0;
 }
 
+/* Tree Node Structure */
+.tree-node-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.tree-children {
+    display: flex;
+    flex-direction: column;
+}
+
 .sidebar-item {
     display: flex;
     align-items: center;
     padding: 10px 16px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, padding-left 0.3s ease;
     user-select: none;
     position: relative;
-    gap: 12px;
+    gap: 8px;
+    /* Slightly reduced gap for chevrons */
     color: var(--text-color);
+}
+
+.expand-chevron-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    color: var(--text-tertiary);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.expand-chevron-wrapper:hover {
+    background-color: var(--surface-color);
+    color: var(--primary-color);
+}
+
+.sidebar-item .cat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .sidebar-item:hover {
@@ -90,16 +125,20 @@
 
 .category-sidebar.collapsed .sidebar-item {
     justify-content: center;
-    padding: 10px 0;
+    padding: 10px 0 !important;
+    /* Force center when collapsed */
+}
+
+.category-sidebar.collapsed .expand-chevron-wrapper {
+    display: none;
 }
 
 .cat-name {
     flex: 1;
-    white-space: normal !important;
-    overflow: visible !important;
-    word-break: break-all;
-    min-width: 0;
-    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.95rem;
 }
 
 .sidebar-footer {
@@ -133,4 +172,24 @@
 
 .category-sidebar.collapsed .add-collection-btn {
     padding: 10px 0;
+}
+
+/* Drag & Drop Styles */
+.sidebar-item.dragging {
+    opacity: 0.4;
+    background: var(--surface-color);
+    border: 1px dashed var(--primary-color);
+}
+
+.sidebar-item.drop-target-above {
+    border-top: 2px solid var(--primary-color) !important;
+}
+
+.sidebar-item.drop-target-below {
+    border-bottom: 2px solid var(--primary-color) !important;
+}
+
+.sidebar-item.drop-target-inside {
+    background: rgba(var(--primary-color-rgb), 0.1) !important;
+    outline: 2px solid var(--primary-color);
 }

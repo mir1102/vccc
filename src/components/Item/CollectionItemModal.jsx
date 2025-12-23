@@ -159,7 +159,7 @@ const CollectionItemModal = ({ isOpen, onClose, category, onSave, initialDate })
     const dateTitle = initialDate ? ` (${initialDate.getMonth() + 1}월 ${initialDate.getDate()}일)` : '';
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={`${category.name} 항목 추가${dateTitle}`}>
+        <Modal isOpen={isOpen} onClose={onClose} title={`${category.name} 항목 추가${dateTitle}`} className="notranslate">
             <div className="item-form-container" style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: '4px' }}>
                 {category.schema ? (
                     category.schema.map(col => renderFormInput(col))

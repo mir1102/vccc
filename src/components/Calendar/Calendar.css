@@ -143,12 +143,37 @@
 }
 
 .cell.today {
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
+    background: transparent !important;
+    border: none !important;
 }
 
+.cell.today .number {
+    color: var(--primary-color) !important;
+    font-weight: 800;
+    font-size: 1.1em;
+}
+
+.cell.selected {
+    background-color: transparent;
+    /* Changed from fill to maybe just text selection or keep fill for CLICKED selection? 
+                                    User said "Today" should be no background. 
+                                    Let's keep "Selected" as a fill circle to distinguish 'clicked date' vs 'today'. */
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    color: white !important;
+}
+
+.cell.selected .number {
+    color: white !important;
+}
+
+/* HIGH SPECIFICITY FIX for Today + Selected */
 .cell.today.selected {
-    color: white;
+    background-color: var(--primary-color) !important;
+}
+
+.cell.today.selected .number {
+    color: white !important;
 }
 
 .cell.disabled {
@@ -157,28 +182,10 @@
     pointer-events: none;
 }
 
-.placeholder-view {
-    padding: 40px;
-    text-align: center;
-    color: var(--text-color);
-    opacity: 0.5;
-}
-
-/* Event Indicators */
-.dot {
-    width: 4px;
-    height: 4px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    margin-top: 2px;
-}
-
-.cell.selected .dot {
-    background-color: white;
-}
-
-.cell.today .dot {
-    background-color: var(--primary-color);
+/* Dots are inline styled but let's ensure containers align */
+.indicators-container {
+    height: 12px;
+    /* Fixed height for consistency */
 }
 
 /* Daily Agenda */
