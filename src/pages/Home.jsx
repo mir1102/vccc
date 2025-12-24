@@ -277,21 +277,6 @@ const Home = () => {
         }
     };
 
-    // --- Global Creation State ---
-    const [globalContextMenu, setGlobalContextMenu] = useState(null);
-
-    const handleGlobalContextMenu = (e) => {
-        // Only show if not clicking on an interactive element? 
-        // For now, let's keep it simple: always show unless shift is held
-        if (e.shiftKey) return;
-
-        e.preventDefault();
-        setGlobalContextMenu({
-            x: e.clientX,
-            y: e.clientY
-        });
-    };
-
     // --- Tab Change Handlers ---
     // Calendar Refresh Trigger
     const [calendarRefreshTrigger, setCalendarRefreshTrigger] = useState(0);
@@ -309,16 +294,7 @@ const Home = () => {
     const activeCategory = selectedCategory;
 
     return (
-        <div className="home-container notranslate" onContextMenu={handleGlobalContextMenu}>
-
-            {globalContextMenu && (
-                <ContextMenu
-                    x={globalContextMenu.x}
-                    y={globalContextMenu.y}
-                    onClose={() => setGlobalContextMenu(null)}
-                    actions={[]}
-                />
-            )}
+        <div className="home-container notranslate">
 
             {/* Content Area with Side Panel */}
             <div className="home-content-wrapper" style={{ display: 'flex', width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
@@ -333,7 +309,6 @@ const Home = () => {
                         <div className="calendar-section full-height">
                             <CalendarView
                                 refreshTrigger={calendarRefreshTrigger}
-                                onCreateMemo={handleCreateMemoAt}
                             />
                         </div>
                     ) : (
