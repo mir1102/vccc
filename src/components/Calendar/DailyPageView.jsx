@@ -4,6 +4,7 @@ import { FileText, List, CheckSquare, Clock, Save, Loader, Tag, X } from 'lucide
 import ItemList from '../Item/ItemList';
 import { itemService } from '../../services/itemService';
 import { useAuth } from '../../context/AuthContext';
+// ...
 import { parseDateFromText } from '../../utils/dateParser';
 import './DailyPage.css';
 
@@ -22,19 +23,14 @@ const DailyPageView = ({
 }) => {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('schedule'); // separate views
-    const [noteContent, setNoteContent] = useState('');
     const [newTodoContent, setNewTodoContent] = useState('');
     const [newEventContent, setNewEventContent] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
-    const [lastSaved, setLastSaved] = useState(null);
     const [parsedPreview, setParsedPreview] = useState(null);
+
 
     // Filter items based on type
     const events = items.filter(item => item.type === 'event' || !item.type);
     const todos = items.filter(item => item.type === 'todo');
-    const memoItem = items.find(item => item.type === 'memo');
-
-    const saveTimeoutRef = useRef(null);
 
     const handleInputChange = (e) => {
         const text = e.target.value;
@@ -56,63 +52,6 @@ const DailyPageView = ({
         } else {
             setParsedPreview(null);
         }
-    };
-
-    useEffect(() => {
-        if (memoItem) {
-            setNoteContent(memoItem.content || '');
-            setLastSaved(new Date());
-        } else {
-            setNoteContent('');
-            setLastSaved(null);
-        }
-    }, [date, memoItem]);
-
-    const handleNoteChange = (e) => {
-        const newContent = e.target.value;
-        setNoteContent(newContent);
-        setIsSaving(true);
-
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-
-        saveTimeoutRef.current = setTimeout(async () => {
-            // Auto-save logic
-            if (!user?.uid) return;
-
-            try {
-                // If clearing content, delete the memo item
-                if (!newContent.trim()) {
-                    if (memoItem) {
-                        await itemService.deleteItem(memoItem.id);
-                        setLastSaved(new Date());
-                    }
-                    setIsSaving(false);
-                    if (onRefresh) onRefresh();
-                    return;
-                }
-
-                const payload = {
-                    content: newContent,
-                    date: date,
-                    type: 'memo',
-                    isCompleted: false,
-                    categoryId: null
-                };
-
-                if (memoItem) {
-                    await itemService.updateItem(memoItem.id, payload);
-                } else {
-                    await itemService.addItem(user.uid, payload);
-                }
-
-                setLastSaved(new Date());
-                setIsSaving(false);
-                if (onRefresh) onRefresh();
-            } catch (error) {
-                console.error("Auto-save failed", error);
-                setIsSaving(false);
-            }
-        }, 1000);
     };
 
     const TabButton = ({ id, label, icon: Icon }) => (
@@ -177,13 +116,17 @@ const DailyPageView = ({
                     <div className="page-tabs" style={{ display: 'flex', gap: '5px', background: 'var(--bg-color)', padding: '4px', borderRadius: '6px' }}>
                         <TabButton id="schedule" label="일정" icon={Clock} />
                         <TabButton id="task" label="할 일" icon={CheckSquare} />
-                        <TabButton id="note" label="메모" icon={FileText} />
                     </div>
                 </div>
             </div>
 
             {/* Content Area - SEPARATED VIEWS */}
-            <div className="daily-page-content" style={{ flex: 1, overflowY: 'auto', padding: '15px' }}>
+            <div className="daily-page-content" style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '15px',
+                position: 'relative'
+            }}>
 
                 {/* 1. SCHEDULE TAB */}
                 {activeTab === 'schedule' && (
@@ -364,45 +307,6 @@ const DailyPageView = ({
                                 onItemUpdate={onItemUpdate}
                             />
                             {todos.length === 0 && <div style={{ fontSize: '13px', color: 'var(--text-tertiary)', padding: '10px 0', textAlign: 'center' }}>등록된 할 일이 없습니다.</div>}
-                        </div>
-                    </div>
-                )}
-
-                {/* 3. NOTE TAB */}
-                {activeTab === 'note' && (
-                    <div className="note-section" style={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '8px' }}>
-                            <div style={{ fontSize: '11px', color: 'var(--text-tertiary)', opacity: isSaving || lastSaved ? 1 : 0, transition: 'opacity 0.3s' }}>
-                                {isSaving ? '저장 중...' : '저장됨'}
-                            </div>
-                        </div>
-                        <div style={{
-                            background: 'var(--card-bg)',
-                            borderRadius: '12px',
-                            padding: '15px',
-                            border: '1px solid var(--border-color)',
-                            boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column'
-                        }}>
-                            <textarea
-                                value={noteContent}
-                                onChange={handleNoteChange}
-                                placeholder="오늘의 기록..."
-                                style={{
-                                    width: '100%',
-                                    flex: 1,
-                                    border: 'none',
-                                    background: 'transparent',
-                                    color: 'var(--text-color)',
-                                    resize: 'none',
-                                    lineHeight: '1.6',
-                                    fontSize: '15px',
-                                    fontFamily: 'inherit',
-                                    outline: 'none',
-                                }}
-                            />
                         </div>
                     </div>
                 )}

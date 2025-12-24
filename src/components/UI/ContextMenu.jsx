@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import './ContextMenu.css';
 
 const ContextMenu = ({ x, y, onClose, actions }) => {
@@ -62,15 +63,15 @@ const ContextMenu = ({ x, y, onClose, actions }) => {
         opacity: position.opacity, // Prevent flash
         pointerEvents: position.opacity === 0 ? 'none' : 'auto', // Prevent clicks while hidden
         position: 'fixed', // Ensure it's relative to viewport for correct logic
-        zIndex: 1000
+        zIndex: 12000
     };
 
-    return (
+    return ReactDOM.createPortal(
         <div
             className="context-menu"
             style={style}
             ref={menuRef}
-            onClick={(e) => e.stopPropagation()} // Prevent clicks inside from closing immediately if not desired, though usually we want action click to close.
+            onClick={(e) => e.stopPropagation()}
         >
             {actions.map((action, index) => (
                 <button
@@ -86,7 +87,8 @@ const ContextMenu = ({ x, y, onClose, actions }) => {
                     {action.label}
                 </button>
             ))}
-        </div>
+        </div>,
+        document.body
     );
 };
 

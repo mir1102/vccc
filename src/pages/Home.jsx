@@ -9,6 +9,8 @@ import { categoryService } from '../services/categoryService';
 import { itemService } from '../services/itemService'; // Import
 import { useAuth } from '../context/AuthContext';
 import { useAppPreferences } from '../context/AppPreferencesContext';
+import ContextMenu from '../components/UI/ContextMenu';
+import { Plus } from 'lucide-react';
 import './Home.css';
 
 const Home = () => {
@@ -275,6 +277,22 @@ const Home = () => {
         }
     };
 
+    // --- Global Creation State ---
+    const [globalContextMenu, setGlobalContextMenu] = useState(null);
+
+    const handleGlobalContextMenu = (e) => {
+        // Only show if not clicking on an interactive element? 
+        // For now, let's keep it simple: always show unless shift is held
+        if (e.shiftKey) return;
+
+        e.preventDefault();
+        setGlobalContextMenu({
+            x: e.clientX,
+            y: e.clientY
+        });
+    };
+
+    // --- Tab Change Handlers ---
     // Calendar Refresh Trigger
     const [calendarRefreshTrigger, setCalendarRefreshTrigger] = useState(0);
 
@@ -291,10 +309,23 @@ const Home = () => {
     const activeCategory = selectedCategory;
 
     return (
-        <div className="home-container notranslate">
+        <div className="home-container notranslate" onContextMenu={handleGlobalContextMenu}>
+
+            {globalContextMenu && (
+                <ContextMenu
+                    x={globalContextMenu.x}
+                    y={globalContextMenu.y}
+                    onClose={() => setGlobalContextMenu(null)}
+                    actions={[]}
+                />
+            )}
 
             {/* Content Area with Side Panel */}
             <div className="home-content-wrapper" style={{ display: 'flex', width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+
+
+
+                {/* ... */}
 
                 {/* MAIN VIEW AREA */}
                 <div className="main-view-area" style={{ flex: '1', minWidth: '0', height: '100%', transition: 'all 0.3s' }}>
@@ -302,9 +333,11 @@ const Home = () => {
                         <div className="calendar-section full-height">
                             <CalendarView
                                 refreshTrigger={calendarRefreshTrigger}
+                                onCreateMemo={handleCreateMemoAt}
                             />
                         </div>
                     ) : (
+
                         <div className="bottom-split-view full-height">
                             {/* Fixed Left Sidebar with Dynamic Width */}
                             <div style={{

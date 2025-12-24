@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, addMonths, subMonths, addWeeks, subWeeks, addDays, subDays, startOfMonth, endOfMonth, isSameDay } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, FileText, Check, ArrowRight, Tag, LayoutList, Clock, Image, Link as LinkIcon, Globe, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, FileText, Check, ArrowRight, Tag, LayoutList, Clock, Image, Link as LinkIcon, Globe, Trash2, Plus } from 'lucide-react';
 import MonthView from './MonthView';
 import { itemService } from '../../services/itemService';
 import ItemList from '../Item/ItemList';
@@ -159,6 +159,7 @@ const CalendarView = ({ refreshTrigger }) => {
 
     const handleContextMenu = (e, date) => {
         e.preventDefault();
+        e.stopPropagation();
         setContextMenu({
             x: e.pageX,
             y: e.pageY,
@@ -725,7 +726,13 @@ const CalendarView = ({ refreshTrigger }) => {
             </Modal>
 
             {/* Selected Date Agenda (Replaced with Daily Page) */}
-            <div className="daily-agenda" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            <div className="daily-agenda" style={{
+                padding: 0,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                flex: 1
+            }}>
                 <DailyPageView
                     date={selectedDate} // Always pass selectedDate (or current date if none), but view depends on isDateSelected
                     isDateSelected={isDateSelected} // NEW PROP
